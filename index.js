@@ -2,19 +2,19 @@ const which = require('which');
 const { spawn } = require('child_process');
 const browsers = require('./browsers');
 
-async function getExecutable(browser) {
+async function getExecutable(browser, opt) {
   const execs = browsers[browser];
   if(!execs || !execs[process.platform]) return;
   for(const exec of execs[process.platform]) {
-    const executable = await which(exec).catch(()=>{});
+    const executable = await which(exec, opt).catch(()=>{});
     if(executable) return executable;
   }
 }
 
-async function getAvailableBrowsers() {
+async function getAvailableBrowsers(opt) {
   const list = [];
   for(const browser of Object.keys(browsers)) {
-    const exec = await getExecutable(browser);
+    const exec = await getExecutable(browser, opt);
     if(exec) list.push({ browser, path: exec });
   }
   return list;
